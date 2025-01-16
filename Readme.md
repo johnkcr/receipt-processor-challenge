@@ -52,15 +52,15 @@ The application will run on http://localhost:3000
 ### Submit a Receipt
 
 curl -X POST http://localhost:3000/receipts/process \
-    -H "Content-Type: application/json" \
-    -d '{
-        "retailer": "Target",
-        "purchaseDate": "2022-01-01",
-        "purchaseTime": "13:01",
-        "items": [
-            {"shortDescription": "Mountain Dew 12PK", "price": "6.49"}
-        ],
-        "total": "6.49"
+-H "Content-Type: application/json" \
+-d '{
+      "retailer": "Target",
+      "purchaseDate": "2022-01-01",
+      "purchaseTime": "13:01",
+      "items": [
+          {"shortDescription": "Mountain Dew 12PK", "price": "6.49"}
+      ],
+      "total": "6.49"
     }'
 
 Response:
