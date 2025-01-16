@@ -1,4 +1,4 @@
-module fetch_test
+module github.com/johnkcr/receipt-processor-challenge
 
 go 1.23.3
 

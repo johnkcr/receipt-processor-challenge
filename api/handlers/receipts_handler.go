@@ -1,11 +1,12 @@
 package handlers
 
 import (
-	"context"
+	"encoding/json"
 	"fmt"
+	"net/http"
 
-	"fetch_test/api/gen"
-	"fetch_test/internal/service"
+	"github.com/johnkcr/receipt-processor-challenge/api/gen"
+	"github.com/johnkcr/receipt-processor-challenge/internal/service"
 )
 
 type APIHandler struct {
@@ -18,26 +19,43 @@ func NewAPIHandler() *APIHandler {
 	}
 }
 
-// PostReceiptsProcess handles the submission of receipts for processing.
-func (h *APIHandler) PostReceiptsProcess(ctx context.Context, receipt gen.Receipt) (gen.ReceiptResponse, error) {
-	// Process the receipt using the service layer
+// Implements the POST /receipts/process endpoint
+func (h *APIHandler) PostReceiptsProcess(w http.ResponseWriter, r *http.Request) {
+	// Parse the JSON body into a Receipt object
+	var receipt gen.Receipt
+	if err := json.NewDecoder(r.Body).Decode(&receipt); err != nil {
+		http.Error(w, fmt.Sprintf("Invalid request body: %v", err), http.StatusBadRequest)
+		return
+	}
+
+	// Process the receipt
 	id, err := h.receiptService.ProcessReceipt(receipt)
 	if err != nil {
-		return gen.ReceiptResponse{}, fmt.Errorf("error processing receipt: %w", err)
+		http.Error(w, fmt.Sprintf("Failed to process receipt: %v", err), http.StatusInternalServerError)
+		return
 	}
 
-	// Return the generated receipt ID
-	return gen.ReceiptResponse{ID: id}, nil
+	// Respond with the generated receipt ID
+	response := gen.ReceiptResponse{Id: id}
+	w.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(w).Encode(response); err != nil {
+		http.Error(w, fmt.Sprintf("Failed to encode response: %v", err), http.StatusInternalServerError)
+	}
 }
 
-// GetReceiptsIdPoints retrieves the points awarded for a receipt by ID.
-func (h *APIHandler) GetReceiptsIdPoints(ctx context.Context, id string) (gen.PointsResponse, error) {
-	// Fetch points for the receipt ID from the service layer
+// Implements the GET /receipts/{id}/points endpoint
+func (h *APIHandler) GetReceiptsIdPoints(w http.ResponseWriter, r *http.Request, id string) {
+	// Retrieve the points for the receipt ID
 	points, err := h.receiptService.GetPoints(id)
 	if err != nil {
-		return gen.PointsResponse{}, fmt.Errorf("error retrieving points: %w", err)
+		http.Error(w, fmt.Sprintf("Failed to retrieve points: %v", err), http.StatusNotFound)
+		return
 	}
 
-	// Return the points in the response
-	return gen.PointsResponse{Points: points}, nil
+	// Respond with the points
+	response := gen.PointsResponse{Points: &points}
+	w.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(w).Encode(response); err != nil {
+		http.Error(w, fmt.Sprintf("Failed to encode response: %v", err), http.StatusInternalServerError)
+	}
 }

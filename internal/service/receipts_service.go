@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"fetch_test/api/gen"
+	"github.com/johnkcr/receipt-processor-challenge/api/gen"
 )
 
 type ReceiptService interface {
