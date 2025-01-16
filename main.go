@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/johnkcr/receipt-processor-challenge/api/gen"
 	"github.com/johnkcr/receipt-processor-challenge/api/handlers"
@@ -11,6 +12,11 @@ import (
 )
 
 func main() {
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
 	// Initialize the API handler
 	apiHandler := handlers.NewAPIHandler()
 
@@ -21,6 +27,6 @@ func main() {
 	gen.HandlerFromMux(apiHandler, router)
 
 	// Start the server
-	log.Println("Server is running on :8080")
-	log.Fatal(http.ListenAndServe(":8080", router))
+	log.Printf("Server is running on :%s", port)
+	log.Fatal(http.ListenAndServe(":"+port, router))
 }

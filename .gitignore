@@ -1,0 +1,43 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+receipt-processor
+
+# Build directories
+/build/
+bin/
+out/
+
+# Go environment and dependency files
+/go
+*.log
+*.tmp
+
+# Dependency directories
+vendor/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Editor and IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Docker-specific files
+docker-compose.override.yml
+*.env
+
+# Coverage files
+*.coverprofile
+coverage.out
+
+# Generated code by oapi-codegen
+api/gen/handlers_gen.go
+api/gen/types.go

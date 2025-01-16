@@ -1,0 +1,17 @@
+# Exclude Go-specific build artifacts
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Exclude Go cache and vendor directories
+/vendor
+/.cache
+/.idea
+*.log
+
+# Exclude editor and OS-specific files
+*.swp
+*.swo
+.DS_Store
